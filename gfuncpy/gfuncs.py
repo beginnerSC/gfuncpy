@@ -1,4 +1,3 @@
-import copy
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
@@ -37,21 +36,20 @@ class GridFunction:
         
     def root(self):
         '''
-        Corner case handeling: What if no root? 
-
-        can't use np.searchsorted: x is sorted but not y
+        Linear search from the left until the first root is found, slow but convenient API. 
         '''
-        pass
-    
-        # if self.y[0]==0:
-        #     return self.x[0]
-        # elif self.y[0] < 0:
-        #     idx = np.searchsorted(self.y, 0)
-        # elif self.y[0] > 0:
-        #     idx = np.searchsorted(-self.y, 0)
+        if self.y[0]==0:
+            return self.x[0]
+        elif self.y[0] < 0:
+            idx = np.argmax(self.y > 0)
+        elif self.y[0] > 0:
+            idx = np.argmax(self.y < 0)
 
-        # x0, x1, y0, y1 = self.x[idx-1], self.x[idx], self.y[idx-1], self.y[idx]
-        # return x0 + (x1-x0)*abs(y0/(y1-y0))
+        if idx==0:
+            raise ArithmeticError("It appears there is no root in the range of this function's x grid. ")
+
+        x0, x1, y0, y1 = self.x[idx-1], self.x[idx], self.y[idx-1], self.y[idx]
+        return x0 + (x1-x0)*abs(y0/(y1-y0))
         
     def __call__(self, x):
         '''
@@ -64,26 +62,72 @@ class GridFunction:
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
-                raise ValueError("The two functions for this operation must share the same x grid instance. ")
+                raise ValueError("The two functions for operation '+' must share the same x grid instance. ")
             f.y += other.y
         else:
             # other is a number
             f.y += other
-
         return f
 
     def __sub__(self, other):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
-                raise ValueError("The two functions for this operation must share the same x grid instance. ")
+                raise ValueError("The two functions for operation '-' must share the same x grid instance. ")
             f.y -= other.y
         else:
             # other is a number
             f.y -= other
-
         return f
     
+    def __mul__(self, other):
+        f = GridFunction(x=self.x, y=np.copy(self.y))
+        if isinstance(other, GridFunction):
+            if id(self.x) != id(other.x):
+                raise ValueError("The two functions for operation '*' must share the same x grid instance. ")
+            f.y *= other.y
+        else:
+            # other is a number
+            f.y *= other
+        return f
+
+    def __div__(self, other):
+        f = GridFunction(x=self.x, y=np.copy(self.y))
+        if isinstance(other, GridFunction):
+            if id(self.x) != id(other.x):
+                raise ValueError("The two functions for operation '/' must share the same x grid instance. ")
+            f.y /= other.y
+        else:
+            # other is a number
+            f.y /= other
+        return f
+        
+    def __radd__(self, other):
+        '''
+        for 2 + cos(x), same for rsub, rmul and rdiv
+        '''
+        return self.__add__(other)
+
+    def __rsub__(self, other):
+        return -self + other
+    
+    def __rmul__(self, other):
+        return self.__mul__(other)
+    
+    def __rdiv__(self, other):
+        f = GridFunction(x=self.x, y=np.copy(self.y))
+        if isinstance(other, GridFunction):
+            if id(self.x) != id(other.x):
+                raise ValueError("The two functions for operation '/' must share the same x grid instance. ")
+            f.y = other.y/f.y
+        else:
+            # other is a number
+            f.y = other/f.y
+        return f
+
+    def __neg__(self):
+        return GridFunction(self.x, -np.copy(self.y))
+
     def plot(self, style='-'):
         plt.plot(self.x, self.y, style)
         

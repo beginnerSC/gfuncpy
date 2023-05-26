@@ -5,22 +5,35 @@ from ufuncs import *
 
 if __name__ == '__main__':
     from math import pi
+    from pandas import Series
+    import numpy as np
 
     # expecting ValueError
     # z = Identity(0, 2*pi, 100)
     # sin(x) + cos(z)
 
-    # can't find a way for this to work: h = 2 + cos(x)
-    # but there is a way: 2*np.arange(5) works
-
     x = Identity.uniform_grid(0, 2*pi, 100)
-    f = sin(x) + cos(x)
-    g = sin(x) + sin(x) + cos(x)
-    h = cos(x) + 2
-    
-    print(f(pi/2), g(pi/2), h(pi/2))
-    f.plot()
-    g.plot()
+    f1 = sin(x) + cos(x)
+    f2 = sin(x) + sin(x) + cos(x)
+    f3 = sin(x) + 2
+    f4 = 2 + sin(x)
+    f5 = sin(x) - 2
+    f6 = 2 - sin(x)
+    f7 = -sin(x)
+        
+    # print((3*x+5).root()) # expecting ArithmeticError
+
+    print(f1(pi/2), f2(pi/2), f3(pi/2), f4(pi/2), f5(pi/2), f6(pi/2), f7(pi/2), (3*x-5).root())
+
+    f1.plot()
+    f2.plot()
+    f3.plot()
+    f4.plot()
+    f5.plot()
+    f6.plot()
+    f7.plot()
+
+
 
 
 # %%
