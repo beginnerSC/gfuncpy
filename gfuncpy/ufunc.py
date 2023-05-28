@@ -8,7 +8,7 @@ f(pi/2)
 '''
 
 import numpy as np
-from gfuncs import GridFunction
+from .gfunc import GridFunction
 
 def sin(fnc):   
     return GridFunction(fnc.x, np.sin(fnc.y))

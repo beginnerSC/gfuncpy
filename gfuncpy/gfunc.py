@@ -91,7 +91,7 @@ class GridFunction:
             f.y *= other
         return f
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
@@ -114,7 +114,7 @@ class GridFunction:
     def __rmul__(self, other):
         return self.__mul__(other)
     
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
