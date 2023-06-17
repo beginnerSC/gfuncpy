@@ -57,20 +57,23 @@ class GridFunction:
         '''
         intp = interpolate.interp1d(self.x, self.y)
         return intp(x)
-    
-class GridFunction:
-    # ... (existing code) ...
-    
-    def _apply_operator(self, other, operator):
+        
+    def _apply_operator(self, other, operator, reverse=False):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
                 raise ValueError(f"The two functions for operation '{operator}' must share the same x grid instance.")
-            f.y = operator(f.y, other.y)
+            if reverse:
+                f.y = operator(other.y, f.y)
+            else:
+                f.y = operator(f.y, other.y)
         else:
-            # other is a number
-            f.y = operator(f.y, other)
+            if reverse:
+                f.y = operator(other, f.y)
+            else:
+                f.y = operator(f.y, other)
         return f
+
     
     def __add__(self, other):
         return self._apply_operator(other, np.add)
@@ -85,30 +88,23 @@ class GridFunction:
         return self._apply_operator(other, np.divide)
 
     def __pow__(self, other):
-        return self._apply_operator(other, np.power)        
-        
+        return self._apply_operator(other, np.power)                
+
     def __radd__(self, other):
-        '''
-        for 2 + cos(x), same for rsub, rmul and rdiv
-        '''
-        return self.__add__(other)
+        return self._apply_operator(other, np.add, reverse=True)
 
     def __rsub__(self, other):
-        return -self + other
-    
+        return self._apply_operator(other, np.subtract, reverse=True)
+
     def __rmul__(self, other):
-        return self.__mul__(other)
-    
+        return self._apply_operator(other, np.multiply, reverse=True)
+
     def __rtruediv__(self, other):
-        f = GridFunction(x=self.x, y=np.copy(self.y))
-        if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
-                raise ValueError("The two functions for operation '/' must share the same x grid instance. ")
-            f.y = other.y/f.y
-        else:
-            # other is a number
-            f.y = other/f.y
-        return f
+        return self._apply_operator(other, np.divide, reverse=True)
+
+    def __rpow__(self, other):
+        return self._apply_operator(other, np.power, reverse=True)
+
 
     def __neg__(self):
         return GridFunction(self.x, -np.copy(self.y))
@@ -125,4 +121,3 @@ class Identity(GridFunction):
         f.x = np.linspace(a, b, n+1)
         f.y = np.linspace(a, b, n+1)
         return f
-

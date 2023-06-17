@@ -1,11 +1,8 @@
-# %%
-
 import sys, os, unittest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from gfuncpy.gunc import GridFunction, Identity
-from gfuncpy.ufunc import *
+from gfuncpy import GridFunction, Identity, sin, cos
 import unittest
 import numpy as np
 from math import pi
@@ -36,11 +33,10 @@ class GridFunctionTestCase(unittest.TestCase):
         self.assertAlmostEqual(f8(pi/2), (np.sin(pi/2) + np.cos(pi/2)) / 2)
     
     def test_root(self):
-        self.assertRaises(ArithmeticError, lambda: (3 * self.x + 5).root())
-        
-        # Test for a specific value of pi/2
-        root_value = (3 * self.x - 5).root()
-        self.assertIsNone(root_value)
+        x = self.x
+
+        self.assertRaises(ArithmeticError, lambda: (3*x + 29).root())
+        self.assertAlmostEqual((3*x - 5).root(), 5/3)
 
 if __name__ == '__main__':
     unittest.main()
