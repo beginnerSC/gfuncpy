@@ -58,49 +58,34 @@ class GridFunction:
         intp = interpolate.interp1d(self.x, self.y)
         return intp(x)
     
-    def __add__(self, other):
+class GridFunction:
+    # ... (existing code) ...
+    
+    def _apply_operator(self, other, operator):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
             if id(self.x) != id(other.x):
-                raise ValueError("The two functions for operation '+' must share the same x grid instance. ")
-            f.y += other.y
+                raise ValueError(f"The two functions for operation '{operator}' must share the same x grid instance.")
+            f.y = operator(f.y, other.y)
         else:
             # other is a number
-            f.y += other
-        return f
-
-    def __sub__(self, other):
-        f = GridFunction(x=self.x, y=np.copy(self.y))
-        if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
-                raise ValueError("The two functions for operation '-' must share the same x grid instance. ")
-            f.y -= other.y
-        else:
-            # other is a number
-            f.y -= other
+            f.y = operator(f.y, other)
         return f
     
+    def __add__(self, other):
+        return self._apply_operator(other, np.add)
+    
+    def __sub__(self, other):
+        return self._apply_operator(other, np.subtract)
+    
     def __mul__(self, other):
-        f = GridFunction(x=self.x, y=np.copy(self.y))
-        if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
-                raise ValueError("The two functions for operation '*' must share the same x grid instance. ")
-            f.y *= other.y
-        else:
-            # other is a number
-            f.y *= other
-        return f
-
+        return self._apply_operator(other, np.multiply)
+    
     def __truediv__(self, other):
-        f = GridFunction(x=self.x, y=np.copy(self.y))
-        if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
-                raise ValueError("The two functions for operation '/' must share the same x grid instance. ")
-            f.y /= other.y
-        else:
-            # other is a number
-            f.y /= other
-        return f
+        return self._apply_operator(other, np.divide)
+
+    def __pow__(self, other):
+        return self._apply_operator(other, np.power)        
         
     def __radd__(self, other):
         '''
