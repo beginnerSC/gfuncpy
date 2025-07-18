@@ -1,8 +1,8 @@
 # GFuncPy
 
-GFuncPy is a powerful numerical and plotting library tailored for research and educational applications. It represents functions in discrete form using $x$ and $y$ values, allowing for straightforward arithmetic operations and numerical analysis. This intuitive approach greatly simplifies complex computations, making quantitative research more accessible and productive.
+GFuncPy is a flexible and intuitive library for numerical analysis and plotting — perfect for research, teaching, or just exploring math in a hands-on way. It represents functions in discrete form using $x$ and $y$ values, enabling direct computation and analysis without fuss.
 
-Here's an example showcasing the simplicity and expressiveness of GFuncPy:
+Here's a quick taste of how simple and expressive it can be:
 
 ```python
 from gfuncpy import Identity
@@ -12,4 +12,5 @@ x = Identity.uniform_grid(0, 2, 1000)
 (x**2 - 2).root()
 ```
 
-This example calculates the root of $x^2 - 2$ within the range $[0, 2]$, yielding $\sqrt{2} \approx 1.4142135\ldots$. Dive into the Quick Start guide for more examples and detailed instructions.
+This snippet finds the root of $x^2 - 2$ over the interval $[0, 2]$, yielding $\sqrt{2} \approx 1.4142135\ldots$. Want to see what else it can do? Head to the [documentation page](https://gfuncpy.readthedocs.io/en/latest/index.html) for more examples and walkthroughs.
+
