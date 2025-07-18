@@ -7,7 +7,7 @@
 GFuncPy Documentation
 =====================
 
-GFuncPy is a powerful numerical and plotting library tailored for research and educational applications. It represents functions in discrete form using :math:`x` and :math:`x` values, allowing for straightforward arithmetic operations and numerical analysis. This intuitive approach greatly simplifies complex computations, making quantitative research more accessible and productive.
+GFuncPy is a powerful numerical and plotting library tailored for research and educational applications. It represents functions in discrete form using :math:`x` and :math:`y` values, allowing for straightforward arithmetic operations and numerical analysis. This intuitive approach greatly simplifies complex computations, making quantitative research more accessible and productive.
 
 Here's an example showcasing the simplicity and expressiveness of GFuncPy:
 
