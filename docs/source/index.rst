@@ -27,4 +27,5 @@ This example calculates the root of :math:`x^2 - 2` within the range :math:`[0, 
    :maxdepth: 2
    :caption: Contents:
 
-   quick_start
+   installation
+   usage
