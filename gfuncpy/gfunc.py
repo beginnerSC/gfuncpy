@@ -38,25 +38,57 @@ class GridFunction:
         '''
         Linear search from the left until the first root is found, slow but convenient API. 
         '''
-        if self.y[0]==0:
-            return self.x[0]
+        if self.y[0] == 0:
+            return float(self.x[0])
         elif self.y[0] < 0:
             idx = np.argmax(self.y > 0)
         elif self.y[0] > 0:
             idx = np.argmax(self.y < 0)
 
-        if idx==0:
+        if idx == 0:
             raise ArithmeticError("It appears there is no root in the range of this function's x grid. ")
 
         x0, x1, y0, y1 = self.x[idx-1], self.x[idx], self.y[idx-1], self.y[idx]
-        return x0 + (x1-x0)*abs(y0/(y1-y0))
+        return float(x0 + (x1-x0)*abs(y0/(y1-y0)))
+
+    def integrate(self, frm=None, to=None):
+        '''
+        Compute the integral of the function using the trapezoidal rule.
+        '''
+
+        trapezoid_areas = np.diff(self.x)*(self.y[:-1]+self.y[1:])/2
+        cumulative_areas = np.concatenate(([0], np.cumsum(trapezoid_areas)))
+        antiderivative = GridFunction(self.x, cumulative_areas)
+
+        if frm is None and to is None:
+            return antiderivative     # function
         
+        elif frm is not None and to is None:
+            if frm < self.x[0] or frm > self.x[-1]:
+                raise ValueError("frm must be within the range of x grid.")
+            return antiderivative - antiderivative(frm)  # function
+        
+        elif frm is None and to is not None:
+            if to < self.x[0] or to > self.x[-1]:
+                raise ValueError("to must be within the range of x grid.")
+            return antiderivative(to)  # float
+        
+        else: # both frm and to are specified
+            if frm < self.x[0] or frm > self.x[-1]:
+                raise ValueError("frm must be within the range of x grid.")
+            if to < self.x[0] or to > self.x[-1]:
+                raise ValueError("to must be within the range of x grid.")
+            return antiderivative(to) - antiderivative(frm)  # float
+
     def __call__(self, x):
         '''
-        x can be a list
+        x can be a list or a scalar
         '''
         intp = interpolate.interp1d(self.x, self.y)
-        return intp(x)
+        result = intp(x)
+        if np.isscalar(x):
+            return float(result)
+        return result
         
     def _apply_operator(self, other, operator, reverse=False):
         f = GridFunction(x=self.x, y=np.copy(self.y))
@@ -74,7 +106,6 @@ class GridFunction:
                 f.y = operator(f.y, other)
         return f
 
-    
     def __add__(self, other):
         return self._apply_operator(other, np.add)
     
@@ -105,13 +136,14 @@ class GridFunction:
     def __rpow__(self, other):
         return self._apply_operator(other, np.power, reverse=True)
 
-
     def __neg__(self):
         return GridFunction(self.x, -np.copy(self.y))
 
-    def plot(self, style='-'):
-        plt.plot(self.x, self.y, style)
-        
+    def plot(self, style='-', label=None):
+        plt.plot(self.x, self.y, style, label=label)
+        if label:
+            plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
 class Identity(GridFunction):
     @classmethod
     def uniform_grid(cls, a, b, n):  
