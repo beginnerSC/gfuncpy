@@ -7,9 +7,9 @@
 GFuncPy Documentation
 =====================
 
-GFuncPy is a powerful numerical and plotting library tailored for research and educational applications. It represents functions in discrete form using :math:`x` and :math:`y` values, allowing for straightforward arithmetic operations and numerical analysis. This intuitive approach greatly simplifies complex computations, making quantitative research more accessible and productive.
+GFuncPy is a flexible and intuitive library for numerical analysis and plotting — perfect for research, teaching, or just exploring math in a hands-on way. It represents functions in discrete form using :math:`x` and :math:`y` values, enabling direct computation and analysis without fuss.
 
-Here's an example showcasing the simplicity and expressiveness of GFuncPy:
+Here's a quick taste of how simple and expressive it can be:
 
 .. code-block:: python
 
@@ -20,7 +20,7 @@ Here's an example showcasing the simplicity and expressiveness of GFuncPy:
     (x**2 - 2).root()
 
 
-This example calculates the root of :math:`x^2 - 2` within the range :math:`[0, 2]`, yielding :math:`\sqrt{2} \approx 1.4142135\ldots`. Dive into the Quick Start guide for more examples and detailed instructions.
+This snippet finds the root of :math:`x^2 - 2` over the interval :math:`[0, 2]`, yielding :math:`\sqrt{2} \approx 1.4142135\ldots`. Want to see what else it can do? Head to the *Usage* page below for more examples and walkthroughs.
 
 
 .. toctree::
