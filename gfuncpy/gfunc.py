@@ -153,3 +153,21 @@ class Identity(GridFunction):
         f.x = np.linspace(a, b, n+1)
         f.y = np.linspace(a, b, n+1)
         return f
+    
+    def __init__(self, nodes, n=None):
+        if not hasattr(nodes, "__len__"):
+            raise ValueError('nodes must be an array-like object with length 2, representing an interval for now. ')
+
+        if len(nodes) != 2:
+            raise NotImplementedError('Piece defined functions are not yet implemented. ')
+
+        a, b = nodes
+
+        if not n:
+            n = int((b-a)*200)
+
+        f = self.super()
+        f.x = np.linspace(a, b, n+1)
+        f.y = np.linspace(a, b, n+1)
+        
+        return f
