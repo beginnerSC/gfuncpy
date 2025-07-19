@@ -2,7 +2,7 @@
 
 GFuncPy is a flexible and intuitive library for numerical analysis and plotting — perfect for research, teaching, or just exploring math in a hands-on way. It represents functions in discrete form using $x$ and $y$ values, enabling direct computation and analysis without fuss.
 
-Here's a quick taste of how simple and expressive it can be:
+Here's a quick taste of how simple and expressive it can be: 
 
 ```python
 from gfuncpy import Identity
