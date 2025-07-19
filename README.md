@@ -7,7 +7,7 @@ Here's a quick taste of how simple and expressive it can be:
 ```python
 from gfuncpy import Identity
 
-x = Identity.uniform_grid(0, 2, 1000)
+x = Identity([0, 2])
 
 (x**2 - 2).root()
 ```
