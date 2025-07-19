@@ -166,8 +166,5 @@ class Identity(GridFunction):
         if not n:
             n = int((b-a)*200)
 
-        f = self.super()
-        f.x = np.linspace(a, b, n+1)
-        f.y = np.linspace(a, b, n+1)
-        
-        return f
+        self.x = np.linspace(a, b, n+1)
+        self.y = np.linspace(a, b, n+1)
