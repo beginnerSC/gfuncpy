@@ -2,6 +2,30 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
 
+def maximum(f1, f2):
+    if isinstance(f1, GridFunction) and isinstance(f2, GridFunction):
+        if id(f1.x) != id(f2.x):
+            raise ValueError("The two functions for operation 'maximum' must share the same x grid instance.")
+        return GridFunction(f1.x, np.maximum(f1.y, f2.y))
+    elif isinstance(f1, GridFunction):
+        return GridFunction(f1.x, np.maximum(f1.y, f2))
+    elif isinstance(f2, GridFunction):
+        return GridFunction(f2.x, np.maximum(f1, f2.y))
+    else:
+        raise TypeError("At least one argument must be a GridFunction.")
+
+def minimum(f1, f2):
+    if isinstance(f1, GridFunction) and isinstance(f2, GridFunction):
+        if id(f1.x) != id(f2.x):
+            raise ValueError("The two functions for operation 'minimum' must share the same x grid instance.")
+        return GridFunction(f1.x, np.minimum(f1.y, f2.y))
+    elif isinstance(f1, GridFunction):
+        return GridFunction(f1.x, np.minimum(f1.y, f2))
+    elif isinstance(f2, GridFunction):
+        return GridFunction(f2.x, np.minimum(f1, f2.y))
+    else:
+        raise TypeError("At least one argument must be a GridFunction.")
+
 class GridFunction:
     '''
     Assuming x is sorted and y is in the corresponding order
@@ -143,6 +167,22 @@ class GridFunction:
         plt.plot(self.x, self.y, style, label=label)
         if label:
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+
+    def maximum(self, other):
+        if isinstance(other, GridFunction):
+            if id(self.x) != id(other.x):
+                raise ValueError("The two functions for operation 'maximum' must share the same x grid instance.")
+            return GridFunction(self.x, np.maximum(self.y, other.y))
+        else:
+            return GridFunction(self.x, np.maximum(self.y, other))
+
+    def minimum(self, other):
+        if isinstance(other, GridFunction):
+            if id(self.x) != id(other.x):
+                raise ValueError("The two functions for operation 'minimum' must share the same x grid instance.")
+            return GridFunction(self.x, np.minimum(self.y, other.y))
+        else:
+            return GridFunction(self.x, np.minimum(self.y, other))
 
 class Identity(GridFunction):
     @staticmethod
