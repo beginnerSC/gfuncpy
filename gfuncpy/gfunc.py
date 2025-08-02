@@ -145,14 +145,15 @@ class GridFunction:
             plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
 
 class Identity(GridFunction):
+    @staticmethod
+    def _generate_uniform_grid(a, b, n):
+        x = np.linspace(a, b, n+1)
+        y = np.linspace(a, b, n+1)
+        return x, y
+
     @classmethod
-    def uniform_grid(cls, a, b, n):  
-        # this is how multiple constructors can be defined in python
-        # https://stackoverflow.com/questions/2164258/is-it-not-possible-to-define-multiple-constructors-in-python
-        f = cls()
-        f.x = np.linspace(a, b, n+1)
-        f.y = np.linspace(a, b, n+1)
-        return f
+    def uniform_grid(cls, a, b, n):
+        return cls((a, b), n)
     
     def __init__(self, nodes, n=None):
         if not hasattr(nodes, "__len__"):
@@ -166,5 +167,4 @@ class Identity(GridFunction):
         if not n:
             n = int((b-a)*200)
 
-        self.x = np.linspace(a, b, n+1)
-        self.y = np.linspace(a, b, n+1)
+        self.x, self.y = self._generate_uniform_grid(a, b, n)

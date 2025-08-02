@@ -8,8 +8,49 @@ import numpy as np
 from math import pi
 
 class GridFunctionTestCase(unittest.TestCase):
+
+    def test_integrate(self):
+        x = Identity.uniform_grid(0, 1, 100)
+        f = x**2  
+
+        antideriv = f.integrate()
+        self.assertIsInstance(antideriv, GridFunction)
+        
+        approx = f.integrate(0, 1)
+        expected = 1/3  
+        self.assertAlmostEqual(approx, expected, places=3)
+        
+        approx_half = f.integrate(0, 0.5)
+        expected_half = (0.5**3)/3
+        self.assertAlmostEqual(approx_half, expected_half, places=3)
+        
+        with self.assertRaises(ValueError):
+            f.integrate(-1, 1)
+            
+        with self.assertRaises(ValueError):
+            f.integrate(0, 2)
+
     def setUp(self):
         self.x = Identity.uniform_grid(0, 2*pi, 100)
+
+    def test_identity_init_uniform(self):
+        # Test with default n
+        ident = Identity((0, 1))
+        self.assertTrue(np.allclose(ident.x, ident.y))
+        self.assertEqual(len(ident.x), int((1-0)*200)+1)
+
+        # Test with explicit n
+        ident2 = Identity((0, 2), n=50)
+        self.assertTrue(np.allclose(ident2.x, ident2.y))
+        self.assertEqual(len(ident2.x), 51)
+
+    def test_identity_init_invalid_nodes(self):
+        # Test with non-array-like nodes
+        with self.assertRaises(ValueError):
+            Identity(0)
+        # Test with wrong length nodes
+        with self.assertRaises(NotImplementedError):
+            Identity((0, 1, 2))
         
     def test_function_operations(self):
         x = self.x
