@@ -29,7 +29,7 @@ def setup(app):
 project = 'GFuncPy'
 copyright = '2025, beginnerSC'
 author = 'beginnerSC'
-release = '0.1.3'
+release = '0.1.4'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
