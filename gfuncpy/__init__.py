@@ -1,6 +1,6 @@
 __version__= '0.1.0'
 
-from .gfunc import Identity, GridFunction, maximum, minimum
+from .gfunc import Identity, GridFunction, max, min
 import numpy as np
 
 

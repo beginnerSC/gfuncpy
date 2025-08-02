@@ -3,19 +3,19 @@ import sys, os, unittest
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from gfuncpy import GridFunction, Identity, sin, cos
+import gfuncpy
 import unittest
 import numpy as np
 from math import pi
 
 class GridFunctionTestCase(unittest.TestCase):
     def test_maximum_minimum(self):
-        from gfuncpy import maximum, minimum
         x = Identity.uniform_grid(0, 1, 100)
         f1 = x**2
         f2 = x + 2
         # Pointwise maximum/minimum between two grid functions
-        max_f = maximum(f1, f2)
-        min_f = minimum(f1, f2)
+        max_f = gfuncpy.max(f1, f2)
+        min_f = gfuncpy.min(f1, f2)
         self.assertIsInstance(max_f, GridFunction)
         self.assertIsInstance(min_f, GridFunction)
         # Check values at a few points
@@ -24,8 +24,8 @@ class GridFunctionTestCase(unittest.TestCase):
         self.assertAlmostEqual(min_f(0), min(0**2, 0+2))
         self.assertAlmostEqual(min_f(1), min(1**2, 1+2))
         # Pointwise maximum/minimum with a scalar
-        max_scalar = maximum(f1, 0.5)
-        min_scalar = minimum(f2, 2.5)
+        max_scalar = gfuncpy.max(f1, 0.5)
+        min_scalar = gfuncpy.min(f2, 2.5)
         self.assertIsInstance(max_scalar, GridFunction)
         self.assertIsInstance(min_scalar, GridFunction)
         self.assertAlmostEqual(max_scalar(0), max(0**2, 0.5))

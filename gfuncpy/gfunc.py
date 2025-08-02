@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import interpolate
 
-def maximum(f1, f2):
+def max(f1, f2):
     if isinstance(f1, GridFunction) and isinstance(f2, GridFunction):
         if id(f1.x) != id(f2.x):
             raise ValueError("The two functions for operation 'maximum' must share the same x grid instance.")
@@ -14,7 +14,7 @@ def maximum(f1, f2):
     else:
         raise TypeError("At least one argument must be a GridFunction.")
 
-def minimum(f1, f2):
+def min(f1, f2):
     if isinstance(f1, GridFunction) and isinstance(f2, GridFunction):
         if id(f1.x) != id(f2.x):
             raise ValueError("The two functions for operation 'minimum' must share the same x grid instance.")
