@@ -24,7 +24,7 @@ This snippet finds the root of :math:`x^2 - 2` over the interval :math:`[0, 2]`,
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    installation
