@@ -5,7 +5,7 @@ ipykernel
 nbsphinx
 sphinx-rtd-theme
 sphinx-rtd-dark-mode  # for sphinx-rtd-theme only
-pydata-sphinx-theme
+pydata-sphinx-theme==0.16.1
 matplotlib
 numpy
 scipy
