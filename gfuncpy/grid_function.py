@@ -38,15 +38,56 @@ def min(f1, f2):
     else:
         raise TypeError("At least one argument must be a GridFunction.")
 
+class Grid:
+    def __init__(self, x):
+        self._x = np.asarray(x)
+        self._diff = None
+
+    @property
+    def x(self):
+        return self._x
+
+    @property
+    def diff(self):
+        if self._diff is None:
+            self._diff = np.diff(self._x)
+        return self._diff
+
+    def __len__(self):
+        return len(self._x)
+
+    def __getitem__(self, idx):
+        return self._x[idx]
+
+    def __eq__(self, other):
+        if isinstance(other, Grid):
+            return np.array_equal(self._x, other._x)
+        return False
+
+    def __repr__(self):
+        return f"Grid({self._x})"    
+
 class GridFunction:
     '''
     Assuming x is sorted and y is in the corresponding order
     '''
     def __init__(self, x=None, y=None):
-        if x is not None and y is not None and not (hasattr(x, '__len__') and hasattr(y, '__len__') and len(x)==len(y)):
-            raise ValueError('x and y must be array-like object with the same length')
-        self.x = x
-        self.y = y
+        self.grid = None
+        self.y = None
+        if x is not None and y is not None:
+            if isinstance(x, Grid):
+                if len(x) != len(y):
+                    raise ValueError('Grid and y must have the same length')
+                self.grid = x
+            elif hasattr(x, '__len__') and hasattr(y, '__len__') and len(x)==len(y):
+                self.grid = Grid(x)
+            else:
+                raise ValueError('x and y must be array-like object with the same length')
+            self.y = y
+
+    @property
+    def x(self):
+        return self.grid.x if self.grid is not None else None
     
     @classmethod
     def from_dataframe(cls, df, y, x=None):
@@ -56,17 +97,16 @@ class GridFunction:
         '''
         f = cls()
         f.y = df[y].values
-        
         if x is None:
-            f.x = df.index.values
+            f.grid = Grid(df.index.values)
         else:
-            f.x = df[x].values
+            f.grid = Grid(df[x].values)
         return f
         
     @classmethod
     def from_series(cls, ss):
         f = cls()
-        f.x = ss.index.values
+        f.grid = Grid(ss.index.values)
         f.y = ss.values
         return f
         
@@ -91,24 +131,20 @@ class GridFunction:
         '''
         Compute the integral of the function using the trapezoidal rule.
         '''
-
-        trapezoid_areas = np.diff(self.x)*(self.y[:-1]+self.y[1:])/2
+        trapezoid_areas = self.grid.diff * (self.y[:-1] + self.y[1:]) / 2
         cumulative_areas = np.concatenate(([0], np.cumsum(trapezoid_areas)))
-        antiderivative = GridFunction(self.x, cumulative_areas)
+        antiderivative = GridFunction(self.grid, cumulative_areas)
 
         if frm is None and to is None:
             return antiderivative     # function
-        
         elif frm is not None and to is None:
             if frm < self.x[0] or frm > self.x[-1]:
                 raise ValueError("frm must be within the range of x grid.")
             return antiderivative - antiderivative(frm)  # function
-        
         elif frm is None and to is not None:
             if to < self.x[0] or to > self.x[-1]:
                 raise ValueError("to must be within the range of x grid.")
             return antiderivative(to)  # float
-        
         else: # both frm and to are specified
             if frm < self.x[0] or frm > self.x[-1]:
                 raise ValueError("frm must be within the range of x grid.")
@@ -129,7 +165,7 @@ class GridFunction:
     def _apply_operator(self, other, operator, reverse=False):
         f = GridFunction(x=self.x, y=np.copy(self.y))
         if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
+            if self.x is not other.x:
                 raise ValueError(f"The two functions for operation '{operator}' must share the same x grid instance.")
             if reverse:
                 f.y = operator(other.y, f.y)
@@ -182,7 +218,7 @@ class GridFunction:
 
     def maximum(self, other):
         if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
+            if self.x is not other.x:
                 raise ValueError("The two functions for operation 'maximum' must share the same x grid instance.")
             return GridFunction(self.x, np.maximum(self.y, other.y))
         else:
@@ -190,18 +226,20 @@ class GridFunction:
 
     def minimum(self, other):
         if isinstance(other, GridFunction):
-            if id(self.x) != id(other.x):
+            if self.x is not other.x:
                 raise ValueError("The two functions for operation 'minimum' must share the same x grid instance.")
             return GridFunction(self.x, np.minimum(self.y, other.y))
         else:
             return GridFunction(self.x, np.minimum(self.y, other))
+        
+    int = integrate  # alias for integrate method
 
 class Identity(GridFunction):
     @staticmethod
     def _generate_uniform_grid(a, b, n):
         x = np.linspace(a, b, n+1)
         y = np.linspace(a, b, n+1)
-        return x, y
+        return Grid(x), y
 
     @classmethod
     def uniform_grid(cls, a, b, n):
@@ -219,4 +257,6 @@ class Identity(GridFunction):
         if not n:
             n = int((b-a)*200)
 
-        self.x, self.y = self._generate_uniform_grid(a, b, n)
+        grid, y = self._generate_uniform_grid(a, b, n)
+        self.grid = grid
+        self.y = y
