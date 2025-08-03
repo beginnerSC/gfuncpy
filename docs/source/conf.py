@@ -40,7 +40,7 @@ extensions = [  'nbsphinx',
                 'sphinx.ext.mathjax', 
                 'sphinx.ext.viewcode', 
                 'sphinx_copybutton', 
-                'sphinx_rtd_dark_mode'
+                # 'sphinx_rtd_dark_mode'   # for sphinx_rtd_theme only
              ]
 
 default_dark_mode = False
@@ -53,8 +53,10 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-import sphinx_rtd_theme
-html_theme = 'sphinx_rtd_theme'
+
+import pydata_sphinx_theme
+html_theme = "pydata_sphinx_theme"
+
 # html_theme = 'alabaster'
 html_static_path = ['_static']
 
